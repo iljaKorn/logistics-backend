@@ -1,14 +1,17 @@
 package com.example.logisticsbackend.service;
 
+import com.example.logisticsbackend.dto.RegistrationUserDTO;
 import com.example.logisticsbackend.entity.User;
 import com.example.logisticsbackend.repository.RoleRepository;
 import com.example.logisticsbackend.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,10 +19,22 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+    @Autowired
+    public void setRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
@@ -39,8 +54,12 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public void createNewUser(User user) {
+    public User createNewUser(RegistrationUserDTO registrationUserDTO) {
+        User user = new User();
+        user.setUsername(registrationUserDTO.getUsername());
+        user.setEmail(registrationUserDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(registrationUserDTO.getPassword()));
         user.setRoles(List.of(roleRepository.findByName("ROLE_USER").get()));
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 }

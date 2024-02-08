@@ -2,6 +2,7 @@ package com.example.logisticsbackend.config;
 
 import com.example.logisticsbackend.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -19,11 +20,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
     private UserService userService;
     private JwtRequestFilter jwtRequestFilter;
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+    @Autowired
+    public void setJwtRequestFilter(JwtRequestFilter jwtRequestFilter) {
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
