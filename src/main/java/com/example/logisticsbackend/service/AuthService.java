@@ -1,9 +1,6 @@
 package com.example.logisticsbackend.service;
 
-import com.example.logisticsbackend.dto.JwtRequestDTO;
-import com.example.logisticsbackend.dto.JwtResponseDTO;
-import com.example.logisticsbackend.dto.RegistrationUserDTO;
-import com.example.logisticsbackend.dto.UserDTO;
+import com.example.logisticsbackend.dto.*;
 import com.example.logisticsbackend.entity.User;
 import com.example.logisticsbackend.exception.AppError;
 import com.example.logisticsbackend.utils.JwtTokenUtil;
@@ -41,6 +38,8 @@ public class AuthService {
             return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Пользователь с таким именем уже существует"), HttpStatus.BAD_REQUEST);
         }
         User user = userService.createNewUser(registrationUserDTO);
-        return ResponseEntity.ok(new UserDTO(user.getId(), user.getUsername(), user.getEmail()));
+        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
+        String token = jwtTokenUtil.generateToken(userDetails);
+        return ResponseEntity.ok(new RegistrationResponseDTO(user, token));
     }
 }
