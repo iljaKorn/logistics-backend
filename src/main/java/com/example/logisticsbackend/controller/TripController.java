@@ -1,11 +1,10 @@
 package com.example.logisticsbackend.controller;
 
+import com.example.logisticsbackend.dto.TripDTO;
 import com.example.logisticsbackend.service.TripService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -15,5 +14,9 @@ public class TripController {
     @GetMapping("/trips/all")
     public ResponseEntity<?> getAll() {
         return tripService.getAll();
+    }
+    @PutMapping("/trips/change_rows")
+    public void changeRows(@RequestBody TripDTO dto){
+        tripService.updateTrips(dto);
     }
 }
