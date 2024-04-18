@@ -18,6 +18,7 @@ import java.util.Optional;
 @Repository
 public interface TripRepository extends CrudRepository<Trip, Long> {
     List<Trip> findAll();
+
     @Transactional
     @Modifying
     @Query("UPDATE Trip tr SET tr.arrival = :arrival," +
@@ -29,4 +30,8 @@ public interface TripRepository extends CrudRepository<Trip, Long> {
     void updateTrips(@Param("id") Long tripId, @Param("arrival") String arrival, @Param("departed") String departed,
                      @Param("status") TripStatus status, @Param("arrivalDate") Date arrivalDate,
                      @Param("dapartedDate") Date dapartedDate, @Param("client") String client);
+
+    Trip save(Trip trip);
+
+    void deleteById(Long id);
 }

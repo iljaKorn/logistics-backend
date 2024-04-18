@@ -1,5 +1,6 @@
 package com.example.logisticsbackend.service;
 
+import com.example.logisticsbackend.dto.AddTripDTO;
 import com.example.logisticsbackend.dto.TripDTO;
 import com.example.logisticsbackend.entity.Trip;
 import com.example.logisticsbackend.entity.TripStatus;
@@ -36,5 +37,22 @@ public class TripService {
         TripStatus status = statusRepository.findByName(dto.getStatus()).orElseThrow();
         tripRepository.updateTrips(dto.getId(), dto.getDeparted(), dto.getArrival(), status,
                 dto.getArrivalDate(), dto.getDapartedDate(), dto.getClient());
+    }
+
+    public void addTrip(AddTripDTO dto) {
+        Trip newTrip = new Trip();
+        newTrip.setDeparted(dto.getDeparted());
+        newTrip.setArrival(dto.getArrived());
+        newTrip.setStatus(statusRepository.findByName("Processing").get());
+        newTrip.setCreateDate(new Date());
+        newTrip.setDapartedDate(dto.getDepartedDate());
+        newTrip.setArrivalDate(dto.getArrivedDate());
+        newTrip.setClient(dto.getClient());
+
+        tripRepository.save(newTrip);
+    }
+
+    public void deleteTrip(Long id) {
+        tripRepository.deleteById(id);
     }
 }
